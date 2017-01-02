@@ -14,7 +14,7 @@ os.system("python manage.py migrate")
 insert_data = """
 INSERT INTO "game_user" ("username", "password") VALUES ('admin', '{password}')
 """
-insert_data = insert_data.replace("{password}", os.environ.get('CTF_FLAG_EASY')+os.environ.get('CTF_FLAG_MEDIUM')+os.environ.get('CTF_FLAG_HARD'))
+insert_data = insert_data.replace("{password}", os.environ.get('CTF_FLAG_EASY', 'easy')+os.environ.get('CTF_FLAG_MEDIUM', 'medium')+os.environ.get('CTF_FLAG_HARD', 'hard'))
 
 try:
     cursor = connections['default'].cursor()

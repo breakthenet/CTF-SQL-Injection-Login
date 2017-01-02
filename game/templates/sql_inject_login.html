@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Secret Server</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <style>
+      body {
+        padding-top: 50px;
+        padding-bottom: 20px;
+      }
+    </style>
+    <script>
+      function getParameterByName(name) {
+          var url = window.location.href;
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
+    </script>
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header" style="width:100%">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Super Secret Server</a>
+          <span style="float:right;margin-top:15px;"><select onchange="window.location.href=location.protocol + '//' + location.host + location.pathname+'?difficulty='+this.value" id='diff_select'>
+            <option>Easy</option>
+            <option>Medium</option>
+            <option>Hard</option>
+          </select></span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="jumbotron">
+      <div class="container">
+
+<div id='enter_auth_code'>
+
+<h2>Username:</h2>
+<br>
+<input type='text' id='username'><br><br>
+
+<h2>Password:</h2>
+<br>
+<input type='password' id='password'><br><br>
+
+<button class="btn btn-primary btn-lg" onclick="submit_attempt()">Login</button>
+</div>
+
+<div id='successful_login'>
+</div>
+
+<br><br><br>
+
+<fieldset id='response' style='display:none;'>
+  <legend>Response:</legend>
+  <span id='response_message'></span>
+</fieldset>
+
+      </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script>
+        var current_difficulty = getParameterByName('difficulty');
+        if (!current_difficulty) {
+            current_difficulty = 'Easy';
+        }
+        $('#diff_select').val(current_difficulty);
+        function submit_attempt() {
+            $.ajax({
+                type: 'POST',
+                url: '/submit_attempt',
+                data: {
+                   "username": $('#username').val(),
+                   "password": $('#password').val(),
+                   "difficulty": $('#diff_select').val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log("succeeeess", data);
+
+                    if (data.match_found) {
+                        $('#enter_auth_code').hide();
+                        $('#response').hide();
+                        var htmlz = "";
+                        htmlz += "<h2>Welcome "+data.name+"</h2>";
+                        htmlz += "Last Login: "+data.last_login+"<br><br>";
+                        htmlz += "CTF Flag: "+data.ctf_flag;
+
+                        $('#successful_login').html(htmlz);
+                        $('#successful_login').show();
+                    }
+                    else {
+                        $('#response').show();
+                        var htmlz = "";
+                        htmlz += "<b>Invalid Login For:</b> "+$('#username').val();
+                        htmlz += "<br><br>Be sure to check your caps lock key, then try again.";
+                        $('#response_message').html(htmlz);
+                    }
+                },
+                error: function(e, type, message) {
+                    $('#response').show();
+                    var htmlz = "";
+                    htmlz += "<b>Error in query:</b> "+e.responseJSON.message;
+                    htmlz += "<br><br><b>Details:</b> ";
+                    htmlz += e.responseJSON.type;
+                    $('#response_message').html(htmlz);
+
+                    console.log("ERROR", e, type, message);
+                }
+            });
+
+
+        }
+    </script>
+  </body>
+</html>

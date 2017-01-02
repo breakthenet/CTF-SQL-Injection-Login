@@ -59,17 +59,16 @@
     <div class="jumbotron">
       <div class="container">
 
-<div id='enter_auth_code'>
-
-<h2>Username:</h2>
-<br>
-<input type='text' id='username'><br><br>
-
-<h2>Password:</h2>
-<br>
-<input type='password' id='password'><br><br>
-
-<button class="btn btn-primary btn-lg" onclick="submit_attempt()">Login</button>
+<div id='enter_auth_code' style="width:50%">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Username</label>
+    <input type="text" class="form-control" id="username" placeholder="Enter username">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="password" placeholder="Password">
+  </div>
+  <button class="btn btn-primary" onclick="submit_attempt()">Login</button>
 </div>
 
 <div id='successful_login'>
@@ -115,8 +114,7 @@
                         $('#enter_auth_code').hide();
                         $('#response').hide();
                         var htmlz = "";
-                        htmlz += "<h2>Welcome "+data.name+"</h2>";
-                        htmlz += "Last Login: "+data.last_login+"<br><br>";
+                        htmlz += "<h2>Welcome "+data.username+"</h2>";
                         htmlz += "CTF Flag: "+data.ctf_flag;
 
                         $('#successful_login').html(htmlz);

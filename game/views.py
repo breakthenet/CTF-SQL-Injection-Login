@@ -23,7 +23,7 @@ def _submit_test(post_data):
 
     challenge_meta = {}
     password = hashlib.md5(post_data['password']).hexdigest()
-    challenge_meta['query'] = "SELECT username from game_user WHERE username='{auth_code}' AND password='{password}'"
+    challenge_meta['query'] = "SELECT username from game_user WHERE username='{username}' AND password='{password}'"
 
     challenge_meta['filters'] = [';']
     if difficulty == 'Medium':

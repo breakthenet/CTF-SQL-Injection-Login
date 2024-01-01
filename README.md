@@ -1,4 +1,5 @@
 # SQL Injection - Login as admin
+new
 
 Challenge: Login as the "admin" user to unlock the CTF flag.
 
